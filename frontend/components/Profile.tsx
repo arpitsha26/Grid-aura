@@ -55,7 +55,7 @@ export function Profile({ onNavigate }: ProfileProps) {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Profile & Settings</h1>
+          <h1 className="text-xl font-bold text-gray-900">Profile & Settings  </h1>
           <p className="text-sm text-muted-foreground">Manage your account and preferences</p>
         </div>
       </div>
