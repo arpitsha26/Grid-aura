@@ -21,7 +21,7 @@ interface ReportsProps {
 const reports = [
   {
     id: 1,
-    title: 'Monthly Inventory Forecast',
+    title: 'Monthly Inventory Fore_cast',
     type: 'Forecast Report',
     date: '2024-01-25',
     format: 'PDF',
