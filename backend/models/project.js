@@ -11,6 +11,7 @@ const projectSchema = new mongoose.Schema({
     enum: ["Planned", "Ongoing", "Completed"], 
     default: "Planned" 
   },
+  image: { type: String },
   assets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Asset" }],
   materials: [{ type: mongoose.Schema.Types.ObjectId, ref: "ProjectMaterial" }]
 }, { timestamps: true });

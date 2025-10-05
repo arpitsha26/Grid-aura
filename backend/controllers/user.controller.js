@@ -1,3 +1,4 @@
+import uploadOnCloudinary from "../config/cloudinary.js";
 import User from "../models/user.js";
 
 
@@ -35,36 +36,36 @@ export const getProfile = async (req, res) => {
 
 export const editProfile = async (req, res) => {
   try {
-    
-    const allowedUpdates = [
-      "fullName",
-      "email",
-      "phone",
-      "designation",
-      "department"
-    ];
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ message: "Not authorized" });
+
+    const allowedUpdates = ["fullName", "email", "phone", "designation", "department"];
     const updates = {};
 
     for (const key of allowedUpdates) {
-      if (req.body[key] !== undefined) {
+      if (req.body[key] !== undefined && req.body[key] !== "") {
         updates[key] = req.body[key];
       }
+    }
+
+    if (req.file) {
+      const cloudImageUrl = await uploadOnCloudinary(req.file.path);
+      if (cloudImageUrl) updates.profileImage = cloudImageUrl;
     }
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({ message: "No valid fields to update" });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(req.userId, updates, {
-      new: true,
-      runValidators: true, 
-    })
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    )
       .populate("activeProjects", "name status")
       .select("-password -resetPassOtp -otpExpired -isOtpVerified");
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({
       success: true,
@@ -73,10 +74,9 @@ export const editProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Edit profile error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: `Server error: ${error.message}` });
   }
 };
-
 
 export const adminUpdateUser = async (req, res) => {
   try {

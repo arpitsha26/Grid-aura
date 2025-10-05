@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
     resetPassOtp: { type: String },
     otpExpired: { type: Date },
     isOtpVerified: { type: Boolean, default: false },
+    profileImage: {
+      type: String,
+      default: "",
+    },
 
     isActive: { type: Boolean, default: true },
   },

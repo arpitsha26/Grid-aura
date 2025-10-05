@@ -11,6 +11,7 @@ import "./config/googleAuth.js";
 
 
 import Project from "./models/project.js";
+import projectrouter from "./routes/project.route.js";
 
 
 
@@ -37,6 +38,7 @@ app.use(
 app.use("/api/auth", authrouter)
 app.use("/api/user", userrouter)
 app.use("/api/gr", googlerouter)
+app.use("/api/project", projectrouter)
 
 app.use(passport.initialize());
 app.use(passport.session());
