@@ -5,7 +5,14 @@ const projectMaterialSchema = new mongoose.Schema({
   material: { type: mongoose.Schema.Types.ObjectId, ref: "Material", required: true },
   requiredQty: { type: Number, required: true },
   allocatedQty: { type: Number, default: 0 },
+  procuredQty: { type: Number, default: 0 },
+  status: {
+    type: String,
+    enum: ["Pending", "Partially Procured", "Fully Procured"],
+    default: "Pending",
+  },
+  remarks: { type: String },
 }, { timestamps: true });
 
-const ProjectMaterial=mongoose.model("ProjectMaterial", projectMaterialSchema);
+const ProjectMaterial = mongoose.model("ProjectMaterial", projectMaterialSchema);
 export default ProjectMaterial;
