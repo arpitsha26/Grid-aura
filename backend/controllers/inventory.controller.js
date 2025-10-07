@@ -26,12 +26,15 @@ export const createInventory = async (req, res) => {
 
 export const getAllInventories = async (req, res) => {
   try {
-    const inventories = await Inventory.find().populate("material", "name category unit");
+    const inventories = await Inventory.find()
+      .populate("material", "name category unit")
+      .select("material location availableQty reservedQty optimizedData createdAt updatedAt");
     res.status(200).json(inventories);
   } catch (error) {
     res.status(500).json({ message: "Error fetching inventories", error: error.message });
   }
 };
+
 
 
 export const getInventoryById = async (req, res) => {
@@ -47,13 +50,17 @@ export const getInventoryById = async (req, res) => {
 
 export const updateInventory = async (req, res) => {
   try {
-    const updated = await Inventory.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updateFields = { ...req.body };
+    delete updateFields.optimizedData; 
+
+    const updated = await Inventory.findByIdAndUpdate(req.params.id, updateFields, { new: true });
     if (!updated) return res.status(404).json({ message: "Inventory not found" });
     res.status(200).json({ message: "Inventory updated successfully", inventory: updated });
   } catch (error) {
     res.status(500).json({ message: "Error updating inventory", error: error.message });
   }
 };
+
 
 
 export const deleteInventory = async (req, res) => {
@@ -146,5 +153,18 @@ export const releaseReservedStock = async (req, res) => {
     res.status(200).json({ message: "Reserved stock released successfully", inventory });
   } catch (error) {
     res.status(500).json({ message: "Error releasing stock", error: error.message });
+  }
+};
+
+
+export const getOptimizationData = async (req, res) => {
+  try {
+    const inventory = await Inventory.findById(req.params.id)
+      .select("material location optimizedData")
+      .populate("material", "name");
+    if (!inventory) return res.status(404).json({ message: "Inventory not found" });
+    res.status(200).json(inventory.optimizedData || { message: "No optimization data yet" });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching optimization data", error: error.message });
   }
 };

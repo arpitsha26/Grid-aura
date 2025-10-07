@@ -17,6 +17,7 @@ export const googleCallback = async (req, res) => {
         id: req.user._id,
         fullName: req.user.fullName,
         email: req.user.email,
+        profile:req.user.profileImage
         
       },
     });

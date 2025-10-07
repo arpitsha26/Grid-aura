@@ -22,6 +22,7 @@ import reportrouter from "./routes/report.route.js";
 
 
 
+
 dotenv.config()
 
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/proorder", prorouter)
 app.use("/api/vendor", vendorrouter)
 app.use("/api/inv", inventoryrouter)
 app.use("/api/report", reportrouter)
+
 
 
 app.use(passport.initialize());

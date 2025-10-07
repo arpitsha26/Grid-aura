@@ -11,6 +11,7 @@ const projectMaterialSchema = new mongoose.Schema({
     enum: ["Pending", "Partially Procured", "Fully Procured"],
     default: "Pending",
   },
+
   remarks: { type: String },
 }, { timestamps: true });
 
