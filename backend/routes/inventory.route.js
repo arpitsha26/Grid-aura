@@ -1,4 +1,7 @@
 import express from "express";
+import { isAuth } from "../middlewares/isAuth.js";
+
+import { createInventory, decreaseStock, deleteInventory, getAllInventories, getInventoryById, increaseStock, releaseReservedStock, reserveStock, updateInventory } from "../controllers/inventory.controller.js";
 
 const inventoryrouter = express.Router();
 

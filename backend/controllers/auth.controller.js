@@ -13,7 +13,8 @@ export const signup = async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "User already exists" });
+    if (existingUser)
+      return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -32,7 +33,6 @@ export const signup = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
-        role: user.role,
       },
     });
   } catch (error) {
@@ -46,13 +46,15 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) return res.status(400).json({ message: "Email and password required" });
+    if (!email || !password)
+      return res.status(400).json({ message: "Email and password required" });
 
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid credentials" });
 
     res.status(200).json({
       message: "Login successful",
@@ -61,7 +63,6 @@ export const login = async (req, res) => {
         id: user._id,
         fullName: user.fullName,
         email: user.email,
-        role: user.role,
       },
     });
   } catch (error) {
@@ -69,7 +70,6 @@ export const login = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 export const sendOtp = async (req, res) => {
   try {
@@ -80,7 +80,7 @@ export const sendOtp = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 min
+    const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
 
     user.resetPassOtp = otp;
     user.otpExpired = otpExpiry;
@@ -91,7 +91,7 @@ export const sendOtp = async (req, res) => {
       from: `"PowerGrid Admin" <${process.env.EMAIL}>`,
       to: user.email,
       subject: "Password Reset OTP",
-      html: `<h3>Your OTP: ${otp}</h3><p>Valid for 10 minutes.</p>`
+      html: `<h3>Your OTP: ${otp}</h3><p>Valid for 10 minutes.</p>`,
     });
 
     res.status(200).json({ message: "OTP sent successfully" });
@@ -105,13 +105,16 @@ export const sendOtp = async (req, res) => {
 export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    if (!email || !otp) return res.status(400).json({ message: "Email and OTP are required" });
+    if (!email || !otp)
+      return res.status(400).json({ message: "Email and OTP are required" });
 
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.resetPassOtp !== otp) return res.status(400).json({ message: "Invalid OTP" });
-    if (user.otpExpired < Date.now()) return res.status(400).json({ message: "OTP expired" });
+    if (user.resetPassOtp !== otp)
+      return res.status(400).json({ message: "Invalid OTP" });
+    if (user.otpExpired < Date.now())
+      return res.status(400).json({ message: "OTP expired" });
 
     user.isOtpVerified = true;
     await user.save();
@@ -127,13 +130,18 @@ export const verifyOtp = async (req, res) => {
 export const resetPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
-    if (!email || !newPassword) return res.status(400).json({ message: "Email and new password required" });
+    if (!email || !newPassword)
+      return res
+        .status(400)
+        .json({ message: "Email and new password required" });
 
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (!user.isOtpVerified) {
-      return res.status(400).json({ message: "OTP not verified. Please verify first." });
+      return res
+        .status(400)
+        .json({ message: "OTP not verified. Please verify first." });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 12);
@@ -150,7 +158,3 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-

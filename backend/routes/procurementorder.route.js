@@ -1,6 +1,6 @@
 import express from "express";
-import { isAuth } from "../middlewares/isAuth";
-import { createProcurementOrder, deleteProcurementOrder, getAllProcurementOrders, getOrdersByProject, getProcurementOrderById, updateProcurementOrder } from "../controllers/procurementorder.controller";
+import { isAuth } from "../middlewares/isAuth.js";
+import { createProcurementOrder, deleteProcurementOrder, getAllProcurementOrders, getOrdersByProject, getProcurementOrderById, updateProcurementOrder } from "../controllers/procurementorder.controller.js";
 
 const prorouter = express.Router();
 

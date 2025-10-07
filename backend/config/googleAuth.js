@@ -75,7 +75,6 @@ passport.use(
             email,
             password: "google-oauth",
             phone: "",
-            role: "Engineer",
             profileImage: cloudImageUrl || "",
           });
         } 

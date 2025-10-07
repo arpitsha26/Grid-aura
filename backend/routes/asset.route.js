@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuth } from "../middlewares/isAuth.js";
-import { createAsset, deleteAsset, getAllAssets, getAssetById, getAssetSummaryByProject, updateAsset } from "../controllers/asset.controller.js";
+import { createAsset, deleteAsset, getAllAssets, getAssetById,  updateAsset } from "../controllers/asset.controller.js";
 
 const assetrouter=express.Router();
 

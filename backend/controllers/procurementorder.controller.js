@@ -1,7 +1,7 @@
 
-import Project from "../models/project.model.js";
-import Material from "../models/material.model.js";
-import Vendor from "../models/vendor.model.js";
+import Project from "../models/project.js";
+import Material from "../models/material.js";
+import Vendor from "../models/vendor.js";
 import ProcurementOrder from "../models/procurementorder.js";
 
 
