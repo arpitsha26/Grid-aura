@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { Zap, MapPin, Zap as Tower } from "lucide-react";
+import { Zap, Zap as Tower, AlertCircle } from "lucide-react";
 import axios from "axios";
+import { Alert, AlertDescription } from "./ui/alert";
 
 interface GridAuraAuthProps {
   onLogin: () => void;
@@ -17,26 +17,115 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
     password: "",
     confirmPassword: "",
     fullName: "",
+    phoneNumber: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Check for existing token on component mount
+  useEffect(() => {
+    const token = localStorage.getItem("gridAuraToken");
+    const userData = localStorage.getItem("gridAuraUser");
+    
+    if (token && userData) {
+      // User is already logged in, redirect to dashboard
+      onLogin();
+    }
+  }, [onLogin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // onLogin();
-
     setLoading(true);
+    setError(null);
+
+    // Validate before submitting
+    const nextErrors: Record<string, string> = {};
+    const trimmedEmail = formData.email.trim();
+    const trimmedPassword = formData.password;
+    const trimmedConfirm = formData.confirmPassword;
+    const trimmedFullName = formData.fullName.trim();
+    const normalizedPhone = formData.phoneNumber.replace(/\D/g, "");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordStrongEnough = trimmedPassword.length >= 8;
+
+    if (!emailRegex.test(trimmedEmail)) {
+      nextErrors.email = "Enter a valid email address";
+    }
+    if (!passwordStrongEnough) {
+      nextErrors.password = "Password must be at least 8 characters";
+    }
+    if (isSignUp) {
+      if (!trimmedFullName || trimmedFullName.length < 2) {
+        nextErrors.fullName = "Enter your full name";
+      }
+      if (trimmedPassword !== trimmedConfirm) {
+        nextErrors.confirmPassword = "Passwords do not match";
+      }
+      // Accept optional leading +91 or formatting; enforce 10 digits
+      if (!/^\d{10}$/.test(normalizedPhone)) {
+        nextErrors.phoneNumber = "Enter a valid 10-digit phone number";
+      }
+    }
+
+    setFieldErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      setLoading(false);
+      return;
+    }
 
     try {
+      const baseUrl = import.meta.env.VITE_BASE_URL;
+      
       if (isSignUp) {
-        const url = import.meta.env.VITE_BASE_URL + "/api/auth/signup";
+        // Check if passwords match for signup
+        if (formData.password !== formData.confirmPassword) {
+          setError("Passwords don't match");
+          setLoading(false);
+          return;
+        }
 
+        // console.log(trimmedEmail, trimmedPassword, trimmedFullName, normalizedPhone);
+
+        const url = `${baseUrl}/api/auth/signup`;
+        const payload = {
+          fullName: trimmedFullName,
+          email: trimmedEmail,
+          phone: normalizedPhone,
+          password: trimmedPassword,
+        };
+        const res = await axios.post(url, payload, {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (res.status === 201) {
+          // Store user data after successful signup
+          if (res.data.token) {
+            localStorage.setItem("gridAuraToken", res.data.token);
+            
+            // Store user information
+            const userData = {
+              id: res.data.user?.id || "",
+              email: trimmedEmail,
+              fullName: trimmedFullName,
+              phoneNumber: normalizedPhone
+            };
+            
+            localStorage.setItem("gridAuraUser", JSON.stringify(userData));
+          }
+          
+          // Signup successful, now login automatically
+          onLogin();
+        }
+      } else {
+        // Login logic
+        const url = `${baseUrl}/api/auth/login`;
         const res = await axios.post(
           url,
           {
-            fullName: formData.fullName,
-            email: formData.email,
-            password: formData.password,
-            phone: "0000000000",
+            email: trimmedEmail,
+            password: trimmedPassword,
           },
           {
             headers: {
@@ -45,63 +134,52 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
           }
         );
 
-        if (res.status === 201) {
-          // signup successful logic
+        if (res.status === 200) {
+          // Store token if returned
+          if (res.data.token) {
+            localStorage.setItem("gridAuraToken", res.data.token);
+            
+            // Store user information
+            const userData = {
+              id: res.data.user?.id || "",
+              email: formData.email,
+              fullName: res.data.user?.fullName || "",
+              phoneNumber: res.data.user?.phoneNumber || ""
+            };
+            
+            localStorage.setItem("gridAuraUser", JSON.stringify(userData));
+          }
+          
+          // Login successful
+          onLogin();
         }
-      } else {
-        // Login logic
       }
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      console.error(err);
+      setError(
+        err.response?.data?.message || 
+        "Authentication failed. Please check your credentials and try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // e.preventDefault();
-  //   setLoading(true);
-
-  //   try {
-  //     if (activeTab === 'login') {
-  //       // Call login API
-  //       const response = await axios.post('https://grid-aura.onrender.com/api/login', {
-  //         email,
-  //         password,
-  //       });
-
-  //       // You can handle the response here, e.g. save token or user data
-  //       console.log('Login success:', response.data);
-  //       onLogin(); // notify parent component
-
-  //     } else {
-  //       // Signup
-  //       if (password !== confirmPassword) {
-  //         alert("Passwords don't match");
-  //         setLoading(false);
-  //         return;
-  //       }
-
-  //       const response = await axios.post('https://grid-aura.onrender.com/api/signup', {
-  //         email,
-  //         password,
-  //       });
-
-  //       console.log('Signup success:', response.data);
-  //       onLogin(); // optionally log in user after signup
-  //     }
-  //   } catch (error: any) {
-  //     console.error('API error:', error);
-  //     alert(error.response?.data?.message || 'An error occurred. Please try again.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear field error on change
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const copy = { ...prev };
+      delete copy[field];
+      return copy;
+    });
   };
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
+    setError(null); // Clear errors when switching modes
+    setFieldErrors({});
   };
 
   return (
@@ -210,6 +288,13 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
                 </p>
               </div>
 
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {isSignUp && (
                   <div className="animate-slide-from-right">
@@ -223,6 +308,27 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
                       className="h-10 sm:h-12 bg-white/80 border-gray-200 rounded-lg text-black"
                       required
                     />
+                    {fieldErrors.fullName && (
+                      <p className="mt-1 text-sm text-red-600">{fieldErrors.fullName}</p>
+                    )}
+                  </div>
+                )}
+
+                {isSignUp && (
+                  <div className="animate-slide-from-right">
+                    <Input
+                      type="tel"
+                      placeholder="Phone Number"
+                      value={formData.phoneNumber}
+                      onChange={(e) =>
+                        handleInputChange("phoneNumber", e.target.value)
+                      }
+                      className="h-10 sm:h-12 bg-white/80 border-gray-200 rounded-lg text-black"
+                      required
+                    />
+                    {fieldErrors.phoneNumber && (
+                      <p className="mt-1 text-sm text-red-600">{fieldErrors.phoneNumber}</p>
+                    )}
                   </div>
                 )}
 
@@ -235,6 +341,9 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
                     className="h-10 sm:h-12 bg-white/80 border-gray-200 rounded-lg text-black"
                     required
                   />
+                  {fieldErrors.email && (
+                    <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
+                  )}
                 </div>
 
                 <div>
@@ -248,6 +357,9 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
                     className="h-10 sm:h-12 bg-white/80 border-gray-200 rounded-lg text-black"
                     required
                   />
+                  {fieldErrors.password && (
+                    <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>
+                  )}
                 </div>
 
                 {isSignUp && (
@@ -262,6 +374,9 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
                       className="h-10 sm:h-12 bg-white/80 border-gray-200 rounded-lg text-black"
                       required
                     />
+                    {fieldErrors.confirmPassword && (
+                      <p className="mt-1 text-sm text-red-600">{fieldErrors.confirmPassword}</p>
+                    )}
                   </div>
                 )}
 
@@ -269,9 +384,10 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
                   type="submit"
                   className="w-full h-10 sm:h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
                   size="lg"
+                  disabled={loading}
                 >
                   {loading ? (
-                    <div className="w-1 h-1 rounded-full animate-spin border-1 border-white border-t-transparent" />
+                    <div className="w-5 h-5 rounded-full animate-spin border-2 border-white border-t-transparent" />
                   ) : isSignUp ? (
                     "Create Account"
                   ) : (

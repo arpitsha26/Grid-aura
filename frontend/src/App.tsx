@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GridAuraSplashScreen } from './components/GridAuraSplashScreen';
 import { GridAuraAuth } from './components/GridAuraAuth';
 import { Sidebar } from './components/Sidebar';
@@ -8,8 +8,16 @@ import { ProjectInventory } from './components/ProjectInventory';
 import { ProjectReports } from './components/ProjectReports';
 import { ProjectNotifications } from './components/ProjectNotifications';
 import { DesktopProfile } from './components/DesktopProfile';
+import 'leaflet/dist/leaflet.css';
 
 type Page = 'splash' | 'login' | 'dashboard' | 'analytics' | 'inventory' | 'reports' | 'notifications' | 'profile';
+
+interface User {
+  id: string;
+  email: string;
+  fullName: string;
+  phoneNumber: string;
+}
 
 interface Project {
   id: string;
@@ -89,20 +97,54 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('splash');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  // Restore auth from storage on first load
+  useEffect(() => {
+    const token = localStorage.getItem('gridAuraToken');
+    const userData = localStorage.getItem('gridAuraUser');
+    if (token && userData) {
+      try {
+        const parsed: User = JSON.parse(userData);
+        setUser(parsed);
+      } catch {
+        // If parsing fails, clear invalid data
+        localStorage.removeItem('gridAuraUser');
+      }
+      setIsLoggedIn(true);
+      setCurrentPage('dashboard');
+    } else if (currentPage === 'splash') {
+      // If no auth, proceed to login after splash completes via handler
+    }
+  }, []);
 
   const handleSplashComplete = () => {
     setCurrentPage('login');
   };
 
   const handleLogin = () => {
+    // On successful auth, details are stored by GridAuraAuth
+    const userData = localStorage.getItem('gridAuraUser');
+    if (userData) {
+      try {
+        const parsed: User = JSON.parse(userData);
+        setUser(parsed);
+      } catch {
+        // ignore parse error, rely on token only
+      }
+    }
     setIsLoggedIn(true);
     setCurrentPage('dashboard');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUser(null);
     setSelectedProject(null);
     setCurrentPage('login');
+    // Clear persisted auth
+    localStorage.removeItem('gridAuraToken');
+    localStorage.removeItem('gridAuraUser');
   };
 
   const handleNavigate = (page: string) => {

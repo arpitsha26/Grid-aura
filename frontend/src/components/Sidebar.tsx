@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Badge } from "./ui/badge";
@@ -41,6 +41,30 @@ export function Sidebar({
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userName, setUserName] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("gridAuraUser");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData) as { fullName?: string; email?: string };
+        setUserName(parsed.fullName || "");
+        setUserEmail(parsed.email || "");
+      } catch {
+        // ignore parse errors
+      }
+    }
+  }, []);
+
+  const userInitials = userName
+    ? userName
+        .split(" ")
+        .filter(Boolean)
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    : "GD"; // GridAura Default
 
   return (
     <>
@@ -157,12 +181,12 @@ export function Sidebar({
               <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-blue-600 text-black text-sm">
-                    JD
+                    {userInitials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-black">John Doe</p>
-                  <p className="text-xs text-black">Project Manager</p>
+                  <p className="text-sm font-medium text-black truncate">{userName || "User"}</p>
+                  <p className="text-xs text-black truncate">{userEmail || ""}</p>
                 </div>
               </div>
             )}

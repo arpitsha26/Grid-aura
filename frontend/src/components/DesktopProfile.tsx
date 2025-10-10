@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -65,6 +65,23 @@ export function DesktopProfile({ onNavigate }: DesktopProfileProps) {
   const handlePreferenceChange = (field: string, value: boolean) => {
     setPreferences(prev => ({ ...prev, [field]: value }));
   };
+
+  // Load persisted user from storage
+  useEffect(() => {
+    const data = localStorage.getItem('gridAuraUser');
+    if (!data) return;
+    try {
+      const parsed = JSON.parse(data) as { fullName?: string; email?: string; phoneNumber?: string; phone?: string };
+      setUserInfo(prev => ({
+        ...prev,
+        fullName: parsed.fullName || prev.fullName,
+        email: parsed.email || prev.email,
+        phone: parsed.phone || parsed.phoneNumber || prev.phone,
+      }));
+    } catch {
+      // ignore parse errors
+    }
+  }, []);
 
   const recentActivity = [
     { action: 'Generated inventory report', project: 'Delhi-NCR Grid Expansion', time: '2 hours ago' },
