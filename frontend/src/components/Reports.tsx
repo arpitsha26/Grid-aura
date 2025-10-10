@@ -95,8 +95,8 @@ export function Reports({ onNavigate }: ReportsProps) {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Reports</h1>
-          <p className="text-sm text-muted-foreground">Download and manage your reports</p>
+          <h1 className="text-xl font-bold text-black">Reports</h1>
+          <p className="text-sm text-black">Download and manage your reports</p>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ export function Reports({ onNavigate }: ReportsProps) {
 
       {/* Reports List */}
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold text-gray-900">Available Reports</h2>
+  <h2 className="text-lg font-semibold text-black">Available Reports</h2>
         
         {reports.map((report) => {
           const Icon = report.icon;
@@ -170,20 +170,20 @@ export function Reports({ onNavigate }: ReportsProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 truncate">{report.title}</h3>
-                        <p className="text-sm text-muted-foreground">{report.type}</p>
+                        <h3 className="font-medium text-black truncate">{report.title}</h3>
+                        <p className="text-sm text-black">{report.type}</p>
                         
-                        <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
+                        <div className="flex items-center space-x-4 mt-2 text-xs text-black">
                           <div className="flex items-center space-x-1">
                             <Calendar className="w-3 h-3" />
-                            <span>{report.date}</span>
+                            <span className="text-black">{report.date}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <FileText className="w-3 h-3" />
-                            <span>{report.format}</span>
+                            <span className="text-black">{report.format}</span>
                           </div>
                           <span>•</span>
-                          <span>{report.size}</span>
+                          <span className="text-black">{report.size}</span>
                         </div>
                       </div>
                       

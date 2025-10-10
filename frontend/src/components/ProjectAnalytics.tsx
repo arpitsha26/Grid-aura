@@ -167,7 +167,7 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Package className="w-5 h-5 text-blue-600" />
-              <span>Materials Usage Breakdown</span>
+                <span className="text-black">Materials Usage Breakdown</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -203,7 +203,7 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
         {/* Materials Distribution */}
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Cost Distribution by Material</CardTitle>
+            <CardTitle className="text-black">Cost Distribution by Material</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -232,9 +232,9 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
         {/* Towers Progress */}
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2">
               <Zap className="w-5 h-5 text-blue-600" />
-              <span>Towers Completed vs Pending</span>
+              <span className="text-black">Towers Completed vs Pending</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -252,11 +252,11 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
             <div className="flex justify-center space-x-6 mt-4">
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-green-500 rounded"></div>
-                <span className="text-sm">Completed</span>
+                <span className="text-sm text-black">Completed</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-red-500 rounded"></div>
-                <span className="text-sm">Pending</span>
+                <span className="text-sm text-black">Pending</span>
               </div>
             </div>
           </CardContent>
@@ -265,9 +265,9 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
         {/* Cost Forecast */}
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2">
               <DollarSign className="w-5 h-5 text-green-600" />
-              <span>Cost Forecast vs Actual</span>
+              <span className="text-black">Cost Forecast vs Actual</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -305,15 +305,15 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
             <div className="flex justify-center space-x-6 mt-4">
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-green-500 rounded"></div>
-                <span className="text-sm">Actual</span>
+                <span className="text-sm text-black">Actual</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-blue-600 rounded"></div>
-                <span className="text-sm">Forecast</span>
+                <span className="text-sm text-black">Forecast</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-red-500 rounded"></div>
-                <span className="text-sm">Budget</span>
+                <span className="text-sm text-black">Budget</span>
               </div>
             </div>
           </CardContent>
@@ -323,9 +323,9 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
       {/* Timeline Milestones */}
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-2">
             <Clock className="w-5 h-5 text-purple-600" />
-            <span>Project Timeline & Milestones</span>
+            <span className="text-black">Project Timeline & Milestones</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -347,19 +347,19 @@ export function ProjectAnalytics({ project }: ProjectAnalyticsProps) {
                 
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-gray-900">{milestone.phase}</h3>
+                    <h3 className="font-medium text-black">{milestone.phase}</h3>
                     <div className="flex items-center space-x-2">
                       <Badge variant={
                         milestone.status === 'completed' ? 'default' :
                         milestone.status === 'ongoing' ? 'secondary' : 'outline'
-                      }>
+                      } className="text-black">
                         {milestone.status}
                       </Badge>
-                      <span className="text-sm text-gray-600">{milestone.deadline}</span>
+                      <span className="text-sm text-black">{milestone.deadline}</span>
                     </div>
                   </div>
                   <Progress value={milestone.progress} className="h-2" />
-                  <p className="text-sm text-gray-600 mt-1">{milestone.progress}% complete</p>
+                  <p className="text-sm text-black mt-1">{milestone.progress}% complete</p>
                 </div>
               </div>
             ))}

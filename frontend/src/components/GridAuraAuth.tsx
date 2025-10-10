@@ -4,6 +4,7 @@ import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Zap, MapPin, Zap as Tower } from "lucide-react";
+import axios from "axios";
 
 interface GridAuraAuthProps {
   onLogin: () => void;
@@ -17,11 +18,83 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
     confirmPassword: "",
     fullName: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin();
+    // onLogin();
+
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        const url = import.meta.env.VITE_BASE_URL + "/api/auth/signup";
+
+        const res = await axios.post(
+          url,
+          {
+            fullName: formData.fullName,
+            email: formData.email,
+            password: formData.password,
+            phone: "0000000000",
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (res.status === 201) {
+          // signup successful logic
+        }
+      } else {
+        // Login logic
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     if (activeTab === 'login') {
+  //       // Call login API
+  //       const response = await axios.post('https://grid-aura.onrender.com/api/login', {
+  //         email,
+  //         password,
+  //       });
+
+  //       // You can handle the response here, e.g. save token or user data
+  //       console.log('Login success:', response.data);
+  //       onLogin(); // notify parent component
+
+  //     } else {
+  //       // Signup
+  //       if (password !== confirmPassword) {
+  //         alert("Passwords don't match");
+  //         setLoading(false);
+  //         return;
+  //       }
+
+  //       const response = await axios.post('https://grid-aura.onrender.com/api/signup', {
+  //         email,
+  //         password,
+  //       });
+
+  //       console.log('Signup success:', response.data);
+  //       onLogin(); // optionally log in user after signup
+  //     }
+  //   } catch (error: any) {
+  //     console.error('API error:', error);
+  //     alert(error.response?.data?.message || 'An error occurred. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -32,7 +105,7 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
   };
 
   return (
-  <div className="min-h-screen min-w-screen bg-white flex flex-col lg:flex-row">
+    <div className="min-h-screen min-w-screen bg-white flex flex-col lg:flex-row">
       {/* Left Panel - Illustration */}
       <div
         className={`relative bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-700 flex items-center justify-center w-full lg:w-1/2 py-16 px-4 sm:p-8 lg:p-12 transition-all duration-500 ${
@@ -76,7 +149,7 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
         </div>
 
         {/* Content */}
-  <div className="relative z-10 text-center text-white space-y-6 mx-auto px-4 sm:px-0 w-full max-w-lg">
+        <div className="relative z-10 text-center text-white space-y-6 mx-auto px-4 sm:px-0 w-full max-w-lg">
           <div
             className={`space-y-4 transition-all duration-500 ${
               isSignUp ? "animate-slide-from-left" : "animate-slide-from-right"
@@ -192,12 +265,18 @@ export function GridAuraAuth({ onLogin }: GridAuraAuthProps) {
                   </div>
                 )}
 
-                  <Button
-                    type="submit"
-                    className="w-full h-10 sm:h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
-                    size="lg"
-                  >
-                  {isSignUp ? "Create Account" : "Sign In"}
+                <Button
+                  type="submit"
+                  className="w-full h-10 sm:h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105"
+                  size="lg"
+                >
+                  {loading ? (
+                    <div className="w-1 h-1 rounded-full animate-spin border-1 border-white border-t-transparent" />
+                  ) : isSignUp ? (
+                    "Create Account"
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
 

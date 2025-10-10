@@ -161,8 +161,8 @@ export function Sidebar({
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">John Doe</p>
-                  <p className="text-xs text-gray-500">Project Manager</p>
+                  <p className="text-sm font-medium text-black">John Doe</p>
+                  <p className="text-xs text-black">Project Manager</p>
                 </div>
               </div>
             )}

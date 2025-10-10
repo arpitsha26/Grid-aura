@@ -206,8 +206,8 @@ export function ProjectReports({ project }: ProjectReportsProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Reports & Analytics</h1>
-          <p className="text-gray-600 mt-1">{project.name} - Comprehensive Project Reports</p>
+          <h1 className="text-3xl font-bold text-black">Reports & Analytics</h1>
+          <p className="text-black mt-1">{project.name} - Comprehensive Project Reports</p>
         </div>
         <div className="flex items-center space-x-3">
           <Select value={dateFilter} onValueChange={setDateFilter}>
@@ -314,8 +314,8 @@ export function ProjectReports({ project }: ProjectReportsProps) {
                     selectedCategory === category.id ? 'text-blue-600' : 'text-gray-600'
                   }`} />
                 </div>
-                <h3 className="font-medium text-gray-900">{category.label}</h3>
-                <p className="text-sm text-gray-600 mt-1">{category.count} reports</p>
+                <h3 className="font-medium text-black">{category.label}</h3>
+                <p className="text-sm text-black mt-1">{category.count} reports</p>
               </CardContent>
             </Card>
           );
@@ -325,22 +325,22 @@ export function ProjectReports({ project }: ProjectReportsProps) {
       {/* Reports Table */}
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-2">
             <FileText className="w-5 h-5 text-blue-600" />
-            <span>{reportCategories.find(cat => cat.id === selectedCategory)?.label}</span>
+            <span className="text-black">{reportCategories.find(cat => cat.id === selectedCategory)?.label}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Report Title</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Format</TableHead>
-                <TableHead>Size</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableRow>
+                <TableHead className="text-black">Report Title</TableHead>
+                <TableHead className="text-black">Description</TableHead>
+                <TableHead className="text-black">Date</TableHead>
+                <TableHead className="text-black">Format</TableHead>
+                <TableHead className="text-black">Size</TableHead>
+                <TableHead className="text-black">Status</TableHead>
+                <TableHead className="text-black">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -348,24 +348,24 @@ export function ProjectReports({ project }: ProjectReportsProps) {
                 <TableRow key={report.id}>
                   <TableCell>
                     <div>
-                      <div className="font-medium text-gray-900">{report.title}</div>
-                      <div className="text-sm text-gray-500">{report.id}</div>
+                      <div className="font-medium text-black">{report.title}</div>
+                      <div className="text-sm text-black">{report.id}</div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <p className="text-sm text-gray-600 max-w-xs">{report.description}</p>
+                    <TableCell>
+                    <p className="text-sm text-black max-w-xs">{report.description}</p>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <Calendar className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm">{report.date}</span>
+                      <span className="text-sm text-black">{report.date}</span>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{report.format}</Badge>
+                    <TableCell>
+                    <Badge variant="outline" className="text-black">{report.format}</Badge>
                   </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-gray-600">{report.size}</span>
+                    <TableCell>
+                    <span className="text-sm text-black">{report.size}</span>
                   </TableCell>
                   <TableCell>
                     <Badge className={getStatusColor(report.status)}>

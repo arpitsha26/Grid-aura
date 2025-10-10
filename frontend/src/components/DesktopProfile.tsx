@@ -79,8 +79,8 @@ export function DesktopProfile({ onNavigate }: DesktopProfileProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Profile & Settings</h1>
-          <p className="text-gray-600 mt-1">Manage your account information and preferences</p>
+          <h1 className="text-3xl font-bold text-black">Profile & Settings</h1>
+          <p className="text-black mt-1">Manage your account information and preferences</p>
         </div>
         <div className="flex items-center space-x-3">
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
@@ -105,9 +105,9 @@ export function DesktopProfile({ onNavigate }: DesktopProfileProps) {
                 </AvatarFallback>
               </Avatar>
             </div>
-            <CardTitle className="text-xl">{userInfo.fullName}</CardTitle>
-            <p className="text-gray-600">{userInfo.designation}</p>
-            <p className="text-sm text-blue-600">{userInfo.department}</p>
+            <CardTitle className="text-xl text-black">{userInfo.fullName}</CardTitle>
+            <p className="text-black">{userInfo.designation}</p>
+            <p className="text-sm text-black">{userInfo.department}</p>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center space-y-2">

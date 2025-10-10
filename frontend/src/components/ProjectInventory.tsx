@@ -292,21 +292,21 @@ export function ProjectInventory({ project }: ProjectInventoryProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Package className="w-5 h-5 text-blue-600" />
-            <span>Material Inventory Status</span>
+            <span className="text-black">Material Inventory Status</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Material</TableHead>
-                <TableHead>Current Stock</TableHead>
-                <TableHead>Required Stock</TableHead>
-                <TableHead>Shortage</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Expected Delivery</TableHead>
-                <TableHead>Supplier</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead className="text-black">Material</TableHead>
+                <TableHead className="text-black">Current Stock</TableHead>
+                <TableHead className="text-black">Required Stock</TableHead>
+                <TableHead className="text-black">Shortage</TableHead>
+                <TableHead className="text-black">Status</TableHead>
+                <TableHead className="text-black">Expected Delivery</TableHead>
+                <TableHead className="text-black">Supplier</TableHead>
+                <TableHead className="text-black">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -317,13 +317,13 @@ export function ProjectInventory({ project }: ProjectInventoryProps) {
                   <TableRow key={item.id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium text-gray-900">{item.material}</div>
-                        <div className="text-sm text-gray-500">Cost: ₹{item.costPerUnit.toLocaleString()}/{item.unit}</div>
+                        <div className="font-medium text-black">{item.material}</div>
+                        <div className="text-sm text-black">Cost: ₹{item.costPerUnit.toLocaleString()}/{item.unit}</div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{item.currentStock.toLocaleString()} {item.unit}</div>
+                        <div className="font-medium text-black">{item.currentStock.toLocaleString()} {item.unit}</div>
                         <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                           <div 
                             className={`h-2 rounded-full transition-all duration-300 ${
@@ -336,7 +336,7 @@ export function ProjectInventory({ project }: ProjectInventoryProps) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-medium">{item.requiredStock.toLocaleString()} {item.unit}</span>
+                      <span className="font-medium text-black">{item.requiredStock.toLocaleString()} {item.unit}</span>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
@@ -356,13 +356,13 @@ export function ProjectInventory({ project }: ProjectInventoryProps) {
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Calendar className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm">{item.expectedDelivery}</span>
+                        <span className="text-sm text-black">{item.expectedDelivery}</span>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        <div className="font-medium text-gray-900">{item.supplier}</div>
-                        <div className="text-gray-500">Updated: {item.lastUpdated}</div>
+                        <div className="font-medium text-black">{item.supplier}</div>
+                        <div className="text-black">Updated: {item.lastUpdated}</div>
                       </div>
                     </TableCell>
                     <TableCell>

@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { GridAuraSplashScreen } from '../components/GridAuraSplashScreen';
-import { GridAuraAuth } from '../components/GridAuraAuth';
-import { Sidebar } from '../components/Sidebar';
-import { GridAuraDashboard } from '../components/GridAuraDashboard';
-import { ProjectAnalytics } from '../components/ProjectAnalytics';
-import { ProjectInventory } from '../components/ProjectInventory';
-import { ProjectReports } from '../components/ProjectReports';
-import { ProjectNotifications } from '../components/ProjectNotifications';
-import { DesktopProfile } from '../components/DesktopProfile';
+import { GridAuraSplashScreen } from './components/GridAuraSplashScreen';
+import { GridAuraAuth } from './components/GridAuraAuth';
+import { Sidebar } from './components/Sidebar';
+import { GridAuraDashboard } from './components/GridAuraDashboard';
+import { ProjectAnalytics } from './components/ProjectAnalytics';
+import { ProjectInventory } from './components/ProjectInventory';
+import { ProjectReports } from './components/ProjectReports';
+import { ProjectNotifications } from './components/ProjectNotifications';
+import { DesktopProfile } from './components/DesktopProfile';
 
 type Page = 'splash' | 'login' | 'dashboard' | 'analytics' | 'inventory' | 'reports' | 'notifications' | 'profile';
 

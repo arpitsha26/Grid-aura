@@ -55,8 +55,8 @@ export function Profile({ onNavigate }: ProfileProps) {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Profile & Settings  </h1>
-          <p className="text-sm text-muted-foreground">Manage your account and preferences</p>
+          <h1 className="text-xl font-bold text-black">Profile & Settings</h1>
+          <p className="text-sm text-black">Manage your account and preferences</p>
         </div>
       </div>
 
@@ -64,7 +64,7 @@ export function Profile({ onNavigate }: ProfileProps) {
       <Card className="backdrop-blur-sm bg-white/70 border border-white/20">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center justify-between">
-            Profile Information
+            <span className="text-black">Profile Information</span>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -98,9 +98,9 @@ export function Profile({ onNavigate }: ProfileProps) {
                 </div>
               ) : (
                 <div>
-                  <h3 className="font-semibold text-lg">{userInfo.name}</h3>
-                  <p className="text-sm text-muted-foreground">{userInfo.email}</p>
-                  <p className="text-sm text-blue-600">{userInfo.role}</p>
+                  <h3 className="font-semibold text-lg text-black">{userInfo.name}</h3>
+                  <p className="text-sm text-black">{userInfo.email}</p>
+                  <p className="text-sm text-black">{userInfo.role}</p>
                 </div>
               )}
             </div>
