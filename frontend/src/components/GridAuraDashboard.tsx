@@ -27,6 +27,7 @@ import {
 interface GridAuraDashboardProps {
   onSelectProject: (project: any) => void;
   selectedProject: any;
+  onNavigateToMaterialDetails?: (project: any) => void;
 }
 
 const overviewStats = {
@@ -98,7 +99,7 @@ const projectStatusData = [
   { name: 'Upcoming', value: 24, color: '#64748b' },
 ];
 
-export function GridAuraDashboard({ onSelectProject, selectedProject }: GridAuraDashboardProps) {
+export function GridAuraDashboard({ onSelectProject, selectedProject, onNavigateToMaterialDetails }: GridAuraDashboardProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [stateFilter, setStateFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -197,9 +198,7 @@ export function GridAuraDashboard({ onSelectProject, selectedProject }: GridAura
         </CardHeader>
         <CardContent>
           <ProjectSelector 
-            projects={[]}
-            selectedProject={selectedProject}
-            onSelectProject={onSelectProject}
+            onNavigateToMaterialDetails={onNavigateToMaterialDetails}
           />
         </CardContent>
       </Card>

@@ -8,9 +8,10 @@ import { ProjectInventory } from './components/ProjectInventory';
 import { ProjectReports } from './components/ProjectReports';
 import { ProjectNotifications } from './components/ProjectNotifications';
 import { DesktopProfile } from './components/DesktopProfile';
+import { MaterialDetail } from './components/MaterialDetail';
 import 'leaflet/dist/leaflet.css';
 
-type Page = 'splash' | 'login' | 'dashboard' | 'analytics' | 'inventory' | 'reports' | 'notifications' | 'profile';
+type Page = 'splash' | 'login' | 'dashboard' | 'analytics' | 'inventory' | 'reports' | 'notifications' | 'profile' | 'material-details';
 
 interface User {
   id: string;
@@ -97,6 +98,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('splash');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProjectForMaterials, setSelectedProjectForMaterials] = useState<any>(null);
   const [user, setUser] = useState<User | null>(null);
 
   // Restore auth from storage on first load
@@ -141,6 +143,7 @@ export default function App() {
     setIsLoggedIn(false);
     setUser(null);
     setSelectedProject(null);
+    setSelectedProjectForMaterials(null);
     setCurrentPage('login');
     // Clear persisted auth
     localStorage.removeItem('gridAuraToken');
@@ -157,6 +160,11 @@ export default function App() {
     if (currentPage !== 'dashboard' && currentPage !== 'profile') {
       setCurrentPage('analytics');
     }
+  };
+
+  const handleNavigateToMaterialDetails = (project: any) => {
+    setSelectedProjectForMaterials(project);
+    setCurrentPage('material-details');
   };
 
   // Render splash screen first
@@ -187,6 +195,7 @@ export default function App() {
             <GridAuraDashboard 
               onSelectProject={handleSelectProject}
               selectedProject={selectedProject}
+              onNavigateToMaterialDetails={handleNavigateToMaterialDetails}
             />
           )}
           {currentPage === 'analytics' && (
@@ -203,6 +212,12 @@ export default function App() {
           )}
           {currentPage === 'profile' && (
             <DesktopProfile onNavigate={handleNavigate} />
+          )}
+          {currentPage === 'material-details' && (
+            <MaterialDetail 
+              onNavigate={handleNavigate}
+              project={selectedProjectForMaterials}
+            />
           )}
         </div>
       </div>

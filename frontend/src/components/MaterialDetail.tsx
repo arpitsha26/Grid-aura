@@ -15,6 +15,7 @@ import {
 
 interface MaterialDetailProps {
   onNavigate: (screen: string) => void;
+  project?: any;
 }
 
 const usageData = [
@@ -35,7 +36,7 @@ const recentTransactions = [
   { date: '2024-01-05', type: 'Received', amount: 300, supplier: 'Metro Steel' },
 ];
 
-export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
+export function MaterialDetail({ onNavigate, project }: MaterialDetailProps) {
   const currentStock = 850;
   const requiredStock = 1200;
   const gap = requiredStock - currentStock;
@@ -58,8 +59,12 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
             <Building className="w-6 h-6 text-red-600" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Steel</h1>
-            <p className="text-sm text-muted-foreground">Structural Steel Inventory</p>
+            <h1 className="text-xl font-bold text-black">
+              {project?.name || 'Project Materials'}
+            </h1>
+            <p className="text-sm text-black">
+              {project?.location || 'Material Inventory Details'}
+            </p>
           </div>
         </div>
       </div>
@@ -68,25 +73,25 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
       <div className="grid grid-cols-3 gap-3">
         <Card className="backdrop-blur-sm bg-white/70 border border-white/20">
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-muted-foreground">Current Stock</p>
-            <p className="text-xl font-bold text-gray-900">{currentStock.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">tons</p>
+            <p className="text-sm text-black">Current Stock</p>
+            <p className="text-xl font-bold text-black">{currentStock.toLocaleString()}</p>
+            <p className="text-xs text-black">tons</p>
           </CardContent>
         </Card>
         
         <Card className="backdrop-blur-sm bg-white/70 border border-white/20">
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-muted-foreground">Required Stock</p>
-            <p className="text-xl font-bold text-gray-900">{requiredStock.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">tons</p>
+            <p className="text-sm text-black">Required Stock</p>
+            <p className="text-xl font-bold text-black">{requiredStock.toLocaleString()}</p>
+            <p className="text-xs text-black">tons</p>
           </CardContent>
         </Card>
         
         <Card className="backdrop-blur-sm bg-white/70 border border-white/20">
           <CardContent className="p-4 text-center">
-            <p className="text-sm text-muted-foreground">Remaining Gap</p>
+            <p className="text-sm text-black">Remaining Gap</p>
             <p className="text-xl font-bold text-red-600">{gap.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">tons</p>
+            <p className="text-xs text-black">tons</p>
           </CardContent>
         </Card>
       </div>
@@ -94,7 +99,7 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
       {/* Stock Level Progress */}
       <Card className="backdrop-blur-sm bg-white/70 border border-white/20">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center justify-between text-black">
             Stock Level
             <Badge variant="destructive" className="text-xs">
               {stockPercentage.toFixed(1)}%
@@ -103,9 +108,9 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
         </CardHeader>
         <CardContent className="pt-0">
           <Progress value={stockPercentage} className="h-3" />
-          <div className="flex justify-between text-xs text-muted-foreground mt-2">
-            <span>0 tons</span>
-            <span>{requiredStock.toLocaleString()} tons</span>
+          <div className="flex justify-between text-xs text-black mt-2">
+            <span className="text-black">0 tons</span>
+            <span className="text-black">{requiredStock.toLocaleString()} tons</span>
           </div>
         </CardContent>
       </Card>
@@ -113,9 +118,9 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
       {/* Usage Trend Chart */}
       <Card className="backdrop-blur-sm bg-white/70 border border-white/20">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center space-x-2">
+          <CardTitle className="text-lg flex items-center space-x-2 text-black">
             <TrendingDown className="w-5 h-5 text-blue-600" />
-            <span>Usage Trend</span>
+            <span className="text-black">Usage Trend</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -123,8 +128,8 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={usageData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="week" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
+                <XAxis dataKey="week" tick={{ fontSize: 11, fill: '#000000' }} />
+                <YAxis tick={{ fontSize: 11, fill: '#000000' }} />
                 <Area 
                   type="monotone" 
                   dataKey="usage" 
@@ -146,11 +151,11 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
           <div className="flex justify-center space-x-6 mt-3">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-blue-600 rounded"></div>
-              <span className="text-sm">Actual Usage</span>
+              <span className="text-sm text-black">Actual Usage</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-green-600 rounded"></div>
-              <span className="text-sm">Forecast</span>
+              <span className="text-sm text-black">Forecast</span>
             </div>
           </div>
         </CardContent>
@@ -162,13 +167,13 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
           <div className="flex items-start space-x-3">
             <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
             <div>
-              <h3 className="font-medium text-red-900">Critical Stock Level</h3>
-              <p className="text-sm text-red-700 mt-1">
+              <h3 className="font-medium text-black">Critical Stock Level</h3>
+              <p className="text-sm text-black mt-1">
                 Steel inventory is below safety threshold. Recommend immediate procurement of {gap} tons to avoid project delays.
               </p>
-              <div className="flex items-center space-x-2 mt-2 text-xs text-red-600">
+              <div className="flex items-center space-x-2 mt-2 text-xs text-black">
                 <Calendar className="w-3 h-3" />
-                <span>Expected shortage in 5 days</span>
+                <span className="text-black">Expected shortage in 5 days</span>
               </div>
             </div>
           </div>
@@ -178,14 +183,14 @@ export function MaterialDetail({ onNavigate }: MaterialDetailProps) {
       {/* Recent Transactions */}
       <Card className="backdrop-blur-sm bg-white/70 border border-white/20">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Recent Transactions</CardTitle>
+          <CardTitle className="text-lg text-black">Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {recentTransactions.map((transaction, index) => (
             <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
               <div>
-                <p className="font-medium text-sm">{transaction.type}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="font-medium text-sm text-black">{transaction.type}</p>
+                <p className="text-xs text-black">
                   {transaction.supplier || transaction.project} • {transaction.date}
                 </p>
               </div>

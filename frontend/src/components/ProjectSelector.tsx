@@ -1,215 +1,224 @@
-import { Card, CardContent } from './ui/card';
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
-import { 
-  MapPin, 
-  Calendar, 
-  Users, 
-  Zap,
+import {
+  MapPin,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Package,
+  Layers,
 } from 'lucide-react';
 
+// ----------- TYPES -------------
 interface Project {
-  id: string;
+  _id: string;
   name: string;
-  state: string;
-  status: 'ongoing' | 'completed' | 'upcoming' | 'delayed';
-  completion: number;
-  deadline: string;
-  team: number;
-  priority: 'high' | 'medium' | 'low';
+  location: string;
+  budget: number;
+  startDate: string;
+  endDate: string;
+  status: string;
+  assets?: any[];
+  materials?: any[];
 }
 
 interface ProjectSelectorProps {
-  projects: Project[];
-  selectedProject: Project | null;
-  onSelectProject: (project: Project) => void;
+  onNavigateToMaterialDetails?: (project: Project) => void;
 }
 
-const mockProjects: Project[] = [
-  {
-    id: '1',
-    name: 'Delhi-NCR Grid Expansion',
-    state: 'Delhi',
-    status: 'ongoing',
-    completion: 75,
-    deadline: '2024-06-15',
-    team: 45,
-    priority: 'high'
-  },
-  {
-    id: '2', 
-    name: 'Mumbai Coastal Transmission',
-    state: 'Maharashtra',
-    status: 'ongoing',
-    completion: 60,
-    deadline: '2024-08-20',
-    team: 32,
-    priority: 'high'
-  },
-  {
-    id: '3',
-    name: 'Kerala Backwater Grid',
-    state: 'Kerala',
-    status: 'upcoming',
-    completion: 0,
-    deadline: '2024-12-10',
-    team: 28,
-    priority: 'medium'
-  },
-  {
-    id: '4',
-    name: 'Rajasthan Solar Integration',
-    state: 'Rajasthan',
-    status: 'ongoing',
-    completion: 85,
-    deadline: '2024-04-30',
-    team: 52,
-    priority: 'high'
-  },
-  {
-    id: '5',
-    name: 'Bengal Rural Electrification',
-    state: 'West Bengal',
-    status: 'delayed',
-    completion: 40,
-    deadline: '2024-07-15',
-    team: 38,
-    priority: 'medium'
-  },
-  {
-    id: '6',
-    name: 'Karnataka Tech Corridor',
-    state: 'Karnataka',
-    status: 'completed',
-    completion: 100,
-    deadline: '2024-02-28',
-    team: 41,
-    priority: 'low'
-  }
-];
+export function ProjectSelector({ onNavigateToMaterialDetails }: ProjectSelectorProps = {}) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [detailsLoading, setDetailsLoading] = useState(false);
 
-export function ProjectSelector({ selectedProject, onSelectProject }: ProjectSelectorProps) {
-  const projects = mockProjects;
+  // Fetch all projects
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch('https://grid-aura.onrender.com/api/project');
+        if (!res.ok) throw new Error('Failed to fetch projects');
+        const data = await res.json();
+        setProjects(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'ongoing': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'upcoming': return 'bg-gray-100 text-gray-800';
-      case 'delayed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+    switch (status.toLowerCase()) {
+      case 'ongoing':
+        return 'bg-blue-100 text-blue-800';
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'planned':
+        return 'bg-gray-100 text-gray-800';
+      case 'delayed':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'bg-red-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+  // Navigate to material details page
+  const handleSelectProject = async (project: Project) => {
+    if (onNavigateToMaterialDetails) {
+      // Navigate directly to material details page
+      onNavigateToMaterialDetails(project);
+    } else {
+      // Fallback to original behavior - show details in dashboard
+      setDetailsLoading(true);
+      setSelectedProject(null);
+
+      try {
+        const res = await fetch(
+          `https://grid-aura.onrender.com/api/project/${project._id}`
+        );
+        if (!res.ok) throw new Error('Failed to fetch project details');
+        const data = await res.json();
+        setSelectedProject(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setDetailsLoading(false);
+      }
     }
   };
+
+  if (loading) return <p className="text-center text-gray-500">Loading projects...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">Active Projects</h2>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" className="p-2">
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
-          <Button variant="outline" size="sm" className="p-2">
-            <ChevronRight className="w-4 h-4" />
-          </Button>
+    <div className="space-y-6">
+      {/* PROJECT LIST */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold text-gray-900">Projects</h2>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" size="sm" className="p-2">
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="sm" className="p-2">
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
+
+        <ScrollArea className="w-full">
+          <div className="flex space-x-4 pb-4">
+            {projects.map((project) => (
+              <Card
+                key={project._id}
+                className={`min-w-[300px] cursor-pointer smooth-transition hover:shadow-md ${
+                  selectedProject?._id === project._id
+                    ? 'ring-2 ring-blue-500 bg-blue-50'
+                    : 'hover:bg-white'
+                }`}
+                onClick={() => handleSelectProject(project)}
+              >
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-gray-900">{project.name}</h3>
+                  <div className="flex items-center text-sm text-gray-600 mt-1">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    {project.location}
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <Badge className={getStatusColor(project.status)}>
+                      {project.status}
+                    </Badge>
+                    <span className="text-sm font-medium text-gray-700">
+                      ₹{project.budget.toLocaleString()}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </ScrollArea>
       </div>
 
-      <ScrollArea className="w-full">
-        <div className="flex space-x-4 pb-4">
-          {projects.map((project) => (
-            <Card
-              key={project.id}
-              className={`min-w-[320px] cursor-pointer smooth-transition hover:shadow-md ${
-                selectedProject?.id === project.id
-                  ? 'ring-2 ring-blue-500 bg-blue-50'
-                  : 'glass-card hover:bg-white'
-              }`}
-              onClick={() => onSelectProject(project)}
-            >
-              <CardContent className="p-5">
-                <div className="space-y-4">
-                  {/* Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 leading-tight">
-                        {project.name}
-                      </h3>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <MapPin className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-600">{project.state}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className={`w-2 h-2 rounded-full ${getPriorityColor(project.priority)}`}></div>
-                      <Badge className={getStatusColor(project.status)}>
-                        {project.status}
-                      </Badge>
-                    </div>
-                  </div>
+      {/* PROJECT DETAILS */}
+      {detailsLoading && (
+        <p className="text-center text-gray-500">Loading project details...</p>
+      )}
 
-                  {/* Progress Bar */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Progress</span>
-                      <span className="font-medium text-gray-900">{project.completion}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          project.completion >= 80 ? 'bg-green-500' :
-                          project.completion >= 50 ? 'bg-blue-500' : 'bg-yellow-500'
-                        }`}
-                        style={{ width: `${project.completion}%` }}
-                      ></div>
-                    </div>
-                  </div>
+      {selectedProject && !detailsLoading && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>{selectedProject.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <p>
+                <strong>Location:</strong> {selectedProject.location}
+              </p>
+              <p>
+                <strong>Status:</strong>{' '}
+                <Badge className={getStatusColor(selectedProject.status)}>
+                  {selectedProject.status}
+                </Badge>
+              </p>
+              <p>
+                <strong>Budget:</strong> ₹
+                {selectedProject.budget.toLocaleString()}
+              </p>
+              <p>
+                <strong>Start Date:</strong>{' '}
+                {new Date(selectedProject.startDate).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>End Date:</strong>{' '}
+                {new Date(selectedProject.endDate).toLocaleDateString()}
+              </p>
+            </CardContent>
+          </Card>
 
-                  {/* Details */}
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="w-4 h-4 text-gray-400" />
-                      <div>
-                        <p className="text-gray-500">Deadline</p>
-                        <p className="font-medium text-gray-900">{project.deadline}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Users className="w-4 h-4 text-gray-400" />
-                      <div>
-                        <p className="text-gray-500">Team Size</p>
-                        <p className="font-medium text-gray-900">{project.team}</p>
-                      </div>
-                    </div>
-                  </div>
+          {/* ASSETS */}
+          <Card>
+            <CardHeader className="flex flex-row items-center space-x-2">
+              <Layers className="w-4 h-4 text-blue-500" />
+              <CardTitle>Assets</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {selectedProject.assets && selectedProject.assets.length > 0 ? (
+                <ul className="list-disc list-inside text-sm text-gray-700">
+                  {selectedProject.assets.map((asset: any, i: number) => (
+                    <li key={i}>{asset.name || 'Unnamed Asset'}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 text-sm">No assets found.</p>
+              )}
+            </CardContent>
+          </Card>
 
-                  {/* Action Indicator */}
-                  {selectedProject?.id === project.id && (
-                    <div className="flex items-center justify-center pt-2">
-                      <div className="flex items-center space-x-2 text-blue-600">
-                        <Zap className="w-4 h-4" />
-                        <span className="text-sm font-medium">Active Project</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {/* MATERIALS */}
+          <Card>
+            <CardHeader className="flex flex-row items-center space-x-2">
+              <Package className="w-4 h-4 text-green-500" />
+              <CardTitle>Materials</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {selectedProject.materials && selectedProject.materials.length > 0 ? (
+                <ul className="list-disc list-inside text-sm text-gray-700">
+                  {selectedProject.materials.map((mat: any, i: number) => (
+                    <li key={i}>{mat.name || 'Unnamed Material'}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 text-sm">No materials found.</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
-      </ScrollArea>
+      )}
     </div>
   );
 }
