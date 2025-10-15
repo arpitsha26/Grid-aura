@@ -18,6 +18,24 @@ import prorouter from "./routes/procurementorder.route.js";
 import vendorrouter from "./routes/vendor.route.js";
 import inventoryrouter from "./routes/inventory.route.js";
 import reportrouter from "./routes/report.route.js";
+import axios from "axios";
+
+
+const url = `https://grid-aura.onrender.com`;
+const interval = 30000;
+
+function reloadWebsite() {
+  axios
+    .get(url)
+    .then((response) => {
+      console.log("website reloded");
+    })
+    .catch((error) => {
+      console.error(`Error : ${error.message}`);
+    });
+}
+
+setInterval(reloadWebsite, interval);
 
 
 
